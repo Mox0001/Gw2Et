@@ -25,12 +25,12 @@ button, input, select { font: inherit; }
 button { padding: 9px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--text); cursor: pointer; }
 button:hover { border-color: var(--accent); background: var(--raised); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.site-header { max-width: 1600px; margin: 0; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); }
+.site-header { width: 100%; margin: 0; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 750; color: var(--text); text-decoration: none; }
 .brand > span:last-child { color: var(--muted); font-size: 11px; letter-spacing: .12em; }
 .brand-mark { color: var(--accent); font-size: 28px; line-height: 1; }
 #theme-toggle { font-size: 12px; }
-main { max-width: 1600px; margin: 0; padding: 36px 32px 20px; }
+main { width: 100%; margin: 0; padding: 36px 32px 20px; }
 h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 720; letter-spacing: -.035em; margin: 4px 0 8px; line-height: 1.2; }
 .eyebrow { font-size: 10px; letter-spacing: .16em; color: var(--accent); margin: 0; font-weight: 700; }
 .note, .muted { color: var(--muted); }
@@ -39,7 +39,7 @@ h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 720; letter-spacing: -.
 .timer-controls label { min-width: 0; font-size: .72rem; font-weight: 650; color: var(--muted); }
 .timer-controls select, .timer-controls input { display: block; margin-top: 6px; width: 100%; min-height: 42px; border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; background: var(--bg); color: var(--text); font-size: .8rem; }
 .timer-controls select:hover, .timer-controls input:hover { border-color: var(--muted); }
-.site-footer { max-width: 1600px; padding: 20px 32px 36px; margin: 0; font-size: .72rem; color: var(--muted); }
+.site-footer { width: 100%; padding: 20px 32px 36px; margin: 0; font-size: .72rem; color: var(--muted); }
 .site-footer p { max-width: 1100px; }
 .notice { padding: 24px; }
 .skip-link { position: absolute; top: -100px; left: 16px; padding: 12px; background: var(--panel); z-index: 30; }

@@ -1,7 +1,7 @@
 /* Horizontal timetable: sticky axis and map labels, UTC-based bar geometry. */
 .event-timeline { --now: #ff596b; --lane-label: 176px; }
 .timeline-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.timeline-navigation { display: flex; gap: 8px; }
+.timeline-navigation { display: flex; gap: 8px; flex-wrap: wrap; }
 .timeline-navigation button, .timeline-detail-actions button { border: 1px solid var(--line); border-radius: 9px; padding: 8px 14px; background: var(--panel); color: var(--text); font: inherit; font-size: .82rem; cursor: pointer; }
 .timeline-navigation button:hover, .timeline-detail-actions button:hover { border-color: var(--accent); }
 .timeline-navigation .following-now { background: var(--accent); border-color: var(--accent); color: #211a0d; font-weight: 700; }
@@ -18,7 +18,7 @@
 .timeline-detail-actions input { width: 144px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--bg); font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; }
 .timeline-detail-actions a { white-space: nowrap; }
 .timeline-copy-status { min-height: 20px; margin: 7px 0; font-size: .8rem; color: var(--accent); }
-.timeline-scroll { max-width: 100%; max-height: 76vh; overflow: auto; position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); scrollbar-color: var(--line) var(--panel); }
+.timeline-scroll { max-width: 100%; overflow-x: auto; overflow-y: hidden; position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); scrollbar-color: var(--line) var(--panel); }
 .timeline-board { position: relative; isolation: isolate; width: max(100%, calc(var(--lane-label) + var(--plot-min))); }
 .timeline-row { display: grid; grid-template-columns: var(--lane-label) minmax(0, 1fr); border-bottom: 1px solid var(--line); }
 .timeline-name { position: sticky; left: 0; z-index: 9; background: var(--panel); border-right: 1px solid var(--line); display: flex; align-items: center; padding: 14px 16px; font-size: .77rem; font-weight: 650; line-height: 1.5; }
@@ -81,7 +81,6 @@
   .timeline-group-name { padding-left: 10px; }
   .timeline-clock, .timeline-range { font-size: .74rem; }
   .timeline-detail { padding: 12px; }
-  .timeline-scroll { max-height: 72vh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .timeline-now-line, .timeline-now-label { transition: none; }
