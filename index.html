@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Unofficial GW2 event timers with local time, UTC, and waypoint copying.">
+  <meta name="color-scheme" content="dark light">
+  <title>GW2 Event Timers</title>
+  <script src="./src/theme.js"></script>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles/base.css">
+  <link rel="stylesheet" href="./styles/timeline.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#timer">Skip to timers</a>
+  <header class="site-header">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">◷</span> GW2 <span>EVENT TIMERS</span></a>
+    <button id="theme-toggle" type="button" aria-label="Toggle light mode" aria-pressed="false">Light mode</button>
+  </header>
+  <main id="timer" tabindex="-1"><p role="status">Loading event schedule…</p></main>
+  <noscript><p class="notice">JavaScript is required to display this timetable and convert UTC times.</p></noscript>
+  <footer class="site-footer">
+    <p>Temporary, unofficial Guild Wars 2 reference tool. Not affiliated with ArenaNet and not a mirror of the Guild Wars 2 Wiki. This timer uses a preserved wiki schedule; it does not fetch live event status from the ArenaNet API.</p>
+    <p>Guild Wars 2 and associated names belong to their respective owners. <a href="./ATTRIBUTION.md">Schedule source and attribution</a> · <a href="./README.md">Setup and maintenance</a></p>
+  </footer>
+</body>
+</html>
