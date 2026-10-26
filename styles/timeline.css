@@ -28,8 +28,14 @@
 .timeline-axis { min-height: 72px; position: sticky; top: 0; z-index: 12; background: var(--panel); }
 .timeline-axis-name { font-size: .66rem; color: var(--muted); letter-spacing: .12em; }
 .timeline-axis .timeline-plot { background-image: none; }
-.timeline-tick { position: absolute; bottom: 12px; padding-left: 7px; border-left: 1px solid var(--line); font-size: .74rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.timeline-tick.last-tick { transform: translateX(-100%); padding-right: 5px; border-left: 0; }
+/* Center interior labels on their UTC tick; only endpoints align inward.
+   120px per quarter-hour leaves room for 12-hour labels at both boundaries. */
+.timeline-tick { position: absolute; bottom: 12px; transform: translateX(-50%); padding-top: 8px; font-size: .74rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.timeline-tick::before { content: ''; position: absolute; top: 0; height: 5px; left: 50%; border-left: 1px solid var(--line); }
+.timeline-tick.first-tick { transform: none; }
+.timeline-tick.first-tick::before { left: 0; }
+.timeline-tick.last-tick { transform: translateX(-100%); }
+.timeline-tick.last-tick::before { left: auto; right: 0; }
 .timeline-group { height: 36px; background: var(--panel); border-bottom: 1px solid var(--line); display: flex; align-items: center; }
 .timeline-group-name { position: sticky; left: 0; z-index: 9; padding: 0 16px; color: var(--accent); font-size: .67rem; letter-spacing: .08em; text-transform: uppercase; background: var(--panel); white-space: nowrap; }
 .timeline-lane { min-height: 86px; --lane-color: #b5a3e8; }
