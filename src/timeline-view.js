@@ -78,6 +78,7 @@ export function mountTimeline(main, data) {
   let manualStart = null, windowRange, board, nowLayer, nowLabel, selected = null, selectedStatus = null, rendered = [], timer;
   let disposed = false;
   const timeLabels = new Map();
+  const collapsedGroups = new Set();
   let displayZone = T.timeZone(zone.value);
   const fullTime = instant => {
     const minute = Math.floor(instant / 60000) * 60000;
@@ -155,10 +156,29 @@ export function mountTimeline(main, data) {
       if (group !== name) {
         group = name; colorIndex++;
         const groupRow = element('div', null, 'timeline-group');
-        groupRow.append(element('strong', name, 'timeline-group-name')); board.append(groupRow);
+        const toggle = element('button', '', 'timeline-group-name timeline-group-toggle');
+        toggle.type = 'button';
+        const updateToggle = () => {
+          const expanded = !collapsedGroups.has(name);
+          toggle.textContent = `${expanded ? '▾' : '▸'} ${name}`;
+          toggle.setAttribute('aria-expanded', String(expanded));
+          toggle.setAttribute('aria-label', `${expanded ? 'Collapse' : 'Expand'} ${name}`);
+        };
+        toggle.onclick = () => {
+          if (collapsedGroups.has(name)) collapsedGroups.delete(name);
+          else collapsedGroups.add(name);
+          for (const lane of board.querySelectorAll('.timeline-lane')) {
+            if (lane.dataset.group === name) lane.hidden = collapsedGroups.has(name);
+          }
+          updateToggle();
+        };
+        updateToggle();
+        groupRow.append(toggle); board.append(groupRow);
       }
       const lane = element('section', null, `timeline-row timeline-lane timeline-tone-${colorIndex % 6}${daylight ? ' timeline-daynight' : ''}`);
       lane.setAttribute('aria-label', row.track.name);
+      lane.dataset.group = name;
+      lane.hidden = collapsedGroups.has(name);
       const label = element('div', null, 'timeline-name'); label.append(pageLink(row.track.name, row.track.page || row.track.name));
       const plot = element('div', null, 'timeline-plot');
       for (const event of row.events) {
