@@ -1,4 +1,4 @@
-import {timeWindow, position, geometry, ticks, isDayNight, waypoint} from './timeline-model.js';
+import {timeWindow, position, geometry, ticks, isDayNight, waypoint, WINDOW_HOURS, PIXELS_PER_HOUR} from './timeline-model.js';
 import {timelineRows} from './timeline-model.js';
 import * as T from './time.js';
 import * as schedule from './schedule.js';
@@ -38,7 +38,7 @@ export function mountTimeline(main, data) {
   clockFormat.value = preferences.clockFormat;
   category.append(new Option('All event groups', ''));
   for (const value of [...new Set(data.tracks.filter(t => !isDayNight(t)).map(t => t.category || 'Other'))]) category.append(new Option(value, value));
-  for (const value of [2, 6, 12, 24]) horizon.append(new Option(value + ' hours', String(value)));
+  for (const value of WINDOW_HOURS) horizon.append(new Option(value + ' hours', String(value)));
   horizon.value = '2';
   query.type = 'search';
   query.placeholder = 'Filter event names…';
@@ -127,12 +127,13 @@ export function mountTimeline(main, data) {
     current.setAttribute('aria-pressed', String(manualStart === null));
     const oldScroll = {left: scroll.scrollLeft, top: scroll.scrollTop};
     board = element('div', null, 'timeline-board');
-    board.style.setProperty('--plot-min', `${Number(horizon.value) * 420}px`);
+    board.style.setProperty('--plot-min', `${Number(horizon.value) * PIXELS_PER_HOUR}px`);
     board.style.setProperty('--tick-count', String(Number(horizon.value) * 4));
     const axis = element('div', null, 'timeline-axis timeline-row'), axisName = element('div', T.timeZone(zone.value) === 'UTC' ? 'UTC' : 'SELECTED TIME', 'timeline-name timeline-axis-name'), axisPlot = element('div', null, 'timeline-plot');
     for (const tick of ticks(windowRange)) {
       const label = element('span', T.formatTime(tick.instant, zone.value, clockFormat.value), 'timeline-tick');
       label.style.left = tick.left + '%'; label.title = fullTime(tick.instant);
+      if (tick.left === 0) label.classList.add('first-tick');
       if (tick.left === 100) label.classList.add('last-tick');
       axisPlot.append(label);
     }
@@ -157,9 +158,9 @@ export function mountTimeline(main, data) {
         if (!placement) continue;
         const bar = element('div', null, 'timeline-event');
         bar.style.left = placement.left + '%'; bar.style.width = placement.width + '%';
-        const compact = placement.width / 100 * Number(horizon.value) * 420 < 72;
+        const compact = placement.width / 100 * Number(horizon.value) * PIXELS_PER_HOUR < 72;
         bar.classList.toggle('is-short', compact);
-        bar.classList.toggle('is-wide', placement.width / 100 * Number(horizon.value) * 420 >= 200);
+        bar.classList.toggle('is-wide', placement.width / 100 * Number(horizon.value) * PIXELS_PER_HOUR >= 200);
         if (daylight) {
           const phase = /dawn/i.test(event.label) ? 'dawn' : /dusk/i.test(event.label) ? 'dusk' : /night/i.test(event.label) ? 'night' : 'day';
           bar.classList.add('timeline-' + phase);

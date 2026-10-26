@@ -1,7 +1,9 @@
 /* Geometry only: the original UTC occurrence engine remains authoritative. */
 export const HOUR = 3600000;
+export const WINDOW_HOURS = Object.freeze([2, 4, 6, 12, 24]);
+export const PIXELS_PER_HOUR = 480;
 export function timeWindow(now, hours = 2, manualStart = null) {
-  if (!Number.isFinite(now) || ![2, 6, 12, 24].includes(hours)) throw new RangeError('Invalid timeline window.');
+  if (!Number.isFinite(now) || !WINDOW_HOURS.includes(hours)) throw new RangeError('Invalid timeline window.');
   const span = hours * HOUR;
   const start = manualStart ?? Math.floor(now / span) * span;
   if (!Number.isFinite(start)) throw new RangeError('Invalid start time.');
