@@ -28,7 +28,7 @@ export function mountTimeline(main, data) {
   const controls = element('div', null, 'timer-controls');
   const zone = element('select'), clockFormat = element('select'), category = element('select'), horizon = element('select'), query = element('input');
   const preferences = loadPreferences();
-  const autoOption = new Option(`Automatic · ${T.detectedZone()}`, 'local');
+  const autoOption = new Option(`Automatic (device) · ${T.detectedZone()}`, 'local');
   zone.append(autoOption);
   for (const value of T.zones([preferences.zone])) {
     zone.append(new Option(value === 'Asia/Dubai' ? 'Asia/Dubai · GMT+4' : value, value));
@@ -48,6 +48,7 @@ export function mountTimeline(main, data) {
     label.append(input); controls.append(label);
   }
   root.append(controls);
+  root.append(element('p', 'Automatic uses your device time zone. To use another region, including your VPN location, choose it from the Time zone dropdown.', 'note'));
   const toolbar = element('div', null, 'timeline-toolbar'), navigation = element('div', null, 'timeline-navigation');
   const previous = element('button', '← Previous'), current = element('button', 'Now'), next = element('button', 'Next →');
   previous.type = current.type = next.type = 'button';
@@ -119,7 +120,7 @@ export function mountTimeline(main, data) {
 
   function draw(center = false) {
     const now = Date.now();
-    autoOption.text = `Automatic · ${T.detectedZone()}`;
+    autoOption.text = `Automatic (device) · ${T.detectedZone()}`;
     windowRange = timeWindow(now, Number(horizon.value), manualStart);
     range.textContent = `${fullTime(windowRange.start)} → ${fullTime(windowRange.end)}`;
     current.classList.toggle('following-now', manualStart === null);
@@ -141,8 +142,8 @@ export function mountTimeline(main, data) {
     let group = null, colorIndex = -1;
     rendered = [];
     for (const row of rows) {
-      const daylight = isDayNight(row.track), regional = ['eod-dn', 'voe-dn'].includes(row.track.id), name = row.track.category || 'Other';
-      if ((!daylight || regional) && group !== name) {
+      const daylight = isDayNight(row.track), name = row.track.category || 'Other';
+      if (group !== name) {
         group = name; colorIndex++;
         const groupRow = element('div', null, 'timeline-group');
         groupRow.append(element('strong', name, 'timeline-group-name')); board.append(groupRow);
