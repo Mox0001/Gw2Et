@@ -24,7 +24,7 @@ export function mountTimeline(main, data) {
   main.append(root);
   root.append(element('p', 'ARCHIVED UTC SCHEDULE · LOCAL DISPLAY', 'eyebrow'), element('h1', 'Event timers'));
   const sourceDate = data.source?.capture ? `${data.source.capture.slice(0, 4)}-${data.source.capture.slice(4, 6)}-${data.source.capture.slice(6, 8)}` : data.source?.revisionDate || 'not recorded';
-  root.append(element('p', `Schedule source: ${sourceDate}. Times repeat from the preserved UTC schedule; later game changes are not included.`, 'note'));
+  root.append(element('p', `Schedule source: ${sourceDate}. Times repeat from the preserved UTC schedule, later game changes are not included.`, 'note'));
   const controls = element('div', null, 'timer-controls');
   const zone = element('select'), clockFormat = element('select'), category = element('select'), horizon = element('select'), query = element('input');
   const preferences = loadPreferences();
