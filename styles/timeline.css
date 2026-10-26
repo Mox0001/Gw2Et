@@ -85,3 +85,8 @@
 @media (prefers-reduced-motion: reduce) {
   .timeline-now-line, .timeline-now-label { transition: none; }
 }
+
+/* Native buttons support keyboard activation; hidden lanes leave no blank rows. */
+.timeline-lane[hidden] { display: none; }
+.timeline-group-toggle { height: 100%; border: 0; border-radius: 0; text-align: left; cursor: pointer; font-family: inherit; font-weight: 700; }
+.timeline-group-toggle:hover { background: var(--raised); color: var(--text); }
