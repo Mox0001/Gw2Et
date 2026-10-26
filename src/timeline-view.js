@@ -67,17 +67,24 @@ export function mountTimeline(main, data) {
   const scroll = element('div', null, 'timeline-scroll');
   scroll.tabIndex = 0; scroll.setAttribute('role', 'region'); scroll.setAttribute('aria-label', 'Horizontal event timeline. Scroll sideways for more times.');
   root.append(scroll);
+  const panLeft = element('button', '← Scroll left'), panRight = element('button', 'Scroll right →');
+  panLeft.type = panRight.type = 'button';
+  navigation.append(panLeft, panRight);
+  panLeft.onclick = () => { scroll.scrollLeft -= scroll.clientWidth * 0.75; };
+  panRight.onclick = () => { scroll.scrollLeft += scroll.clientWidth * 0.75; };
+
   root.append(element('p', 'The red line is the current time. Event blocks keep their original UTC schedule; every displayed time uses your selected time zone. Missing waypoint codes are left unavailable.', 'timeline-help muted'));
 
   let manualStart = null, windowRange, board, nowLayer, nowLabel, selected = null, selectedStatus = null, rendered = [], timer;
   let disposed = false;
   const timeLabels = new Map();
+  let displayZone = T.timeZone(zone.value);
   const fullTime = instant => {
     const minute = Math.floor(instant / 60000) * 60000;
-    const key = `${T.timeZone(zone.value)}:${clockFormat.value}:${minute}`;
+    const key = `${displayZone}:${clockFormat.value}:${minute}`;
     if (!timeLabels.has(key)) {
       if (timeLabels.size > 2048) timeLabels.clear();
-      timeLabels.set(key, `${T.formatDate(minute, zone.value)} · ${T.formatTime(minute, zone.value, clockFormat.value)} · ${T.zoneLabel(minute, zone.value)}`);
+      timeLabels.set(key, `${T.formatDate(minute, displayZone)} · ${T.formatTime(minute, displayZone, clockFormat.value)} · ${T.zoneLabel(minute, displayZone)}`);
     }
     return timeLabels.get(key);
   };
@@ -121,6 +128,7 @@ export function mountTimeline(main, data) {
   function draw(center = false) {
     const now = Date.now();
     autoOption.text = `Automatic (device) · ${T.detectedZone()}`;
+    displayZone = T.timeZone(zone.value);
     windowRange = timeWindow(now, Number(horizon.value), manualStart);
     range.textContent = `${fullTime(windowRange.start)} → ${fullTime(windowRange.end)}`;
     current.classList.toggle('following-now', manualStart === null);
@@ -129,9 +137,9 @@ export function mountTimeline(main, data) {
     board = element('div', null, 'timeline-board');
     board.style.setProperty('--plot-min', `${Number(horizon.value) * PIXELS_PER_HOUR}px`);
     board.style.setProperty('--tick-count', String(Number(horizon.value) * 4));
-    const axis = element('div', null, 'timeline-axis timeline-row'), axisName = element('div', T.timeZone(zone.value) === 'UTC' ? 'UTC' : 'SELECTED TIME', 'timeline-name timeline-axis-name'), axisPlot = element('div', null, 'timeline-plot');
+    const axis = element('div', null, 'timeline-axis timeline-row'), axisName = element('div', displayZone === 'UTC' ? 'UTC' : 'SELECTED TIME', 'timeline-name timeline-axis-name'), axisPlot = element('div', null, 'timeline-plot');
     for (const tick of ticks(windowRange)) {
-      const label = element('span', T.formatTime(tick.instant, zone.value, clockFormat.value), 'timeline-tick');
+      const label = element('span', T.formatTime(tick.instant, displayZone, clockFormat.value), 'timeline-tick');
       label.style.left = tick.left + '%'; label.title = fullTime(tick.instant);
       if (tick.left === 0) label.classList.add('first-tick');
       if (tick.left === 100) label.classList.add('last-tick');
@@ -211,7 +219,7 @@ export function mountTimeline(main, data) {
     nowLayer.hidden = nowLabel.hidden = !visible;
     const left = position(now, windowRange) + '%';
     nowLayer.firstElementChild.style.left = left; nowLabel.style.left = left;
-    nowLabel.textContent = 'NOW ' + T.formatTime(now, zone.value, clockFormat.value);
+    nowLabel.textContent = 'NOW ' + T.formatTime(now, displayZone, clockFormat.value);
     for (const {event, bar} of rendered) {
       bar.classList.toggle('is-active', event.start <= now && now < event.end);
       bar.classList.toggle('is-past', event.end <= now);
@@ -219,7 +227,7 @@ export function mountTimeline(main, data) {
     if (selectedStatus) selectedStatus.textContent = eventStatus(selected, now);
   }
   function dispose() {
-    disposed = true; clearInterval(timer);
+    disposed = true; clearInterval(timer); clearTimeout(searchTimer);
     document.removeEventListener('visibilitychange', refreshVisible);
   }
   function refreshVisible() { if (!document.hidden && !disposed) draw(); }
@@ -228,7 +236,9 @@ export function mountTimeline(main, data) {
     timeLabels.clear();
     draw();
   };
-  category.onchange = query.oninput = () => draw();
+  let searchTimer;
+  category.onchange = () => draw();
+  query.oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => draw(), 120); };
   horizon.onchange = () => { manualStart = null; draw(true); };
   previous.onclick = () => { manualStart = windowRange.start - windowRange.span; draw(); };
   next.onclick = () => { manualStart = windowRange.end; draw(); };
